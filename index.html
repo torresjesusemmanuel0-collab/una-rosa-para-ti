@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una rosa para ti ❤️</title>
+    <style>
+        body {
+            background-color: #0d0d1a;
+            color: #ff758f;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            background-color: transparent;
+        }
+        h2 {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="rosaCanvas" width="400" height="400"></canvas>
+    <h2>Una rosa que nunca se marchita, para ti. ❤️</h2>
+
+    <script>
+        const canvas = document.getElementById('rosaCanvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2 - 20;
+
+        let i = 0;
+        const maxI = 360 * 5;
+
+        // Dibuja el tallo y hoja primero
+        ctx.strokeStyle = "#2b9348";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 80);
+        ctx.quadraticCurveTo(centerX - 20, centerY + 140, centerX - 10, centerY + 180);
+        ctx.stroke();
+
+        // Hoja
+        ctx.fillStyle = "#55a630";
+        ctx.beginPath();
+        ctx.ellipse(centerX - 18, centerY + 130, 20, 9, Math.PI / 4, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Animación de los pétalos de la rosa
+        function animarRosa() {
+            if (i < maxI) {
+                let theta = (i * Math.PI) / 180;
+                let r = 130 * Math.sin((5 / 2) * theta);
+                let x = centerX + r * Math.cos(theta);
+                let y = centerY + r * Math.sin(theta);
+
+                let colorVal = Math.abs(Math.sin(theta));
+                let red = 255;
+                let green = Math.floor(30 * colorVal);
+                let blue = Math.floor(100 + 100 * colorVal);
+
+                ctx.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
+                ctx.lineWidth = 1.5;
+
+                ctx.beginPath();
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    let prevTheta = ((i - 1) * Math.PI) / 180;
+                    let prevR = 130 * Math.sin((5 / 2) * prevTheta);
+                    let prevX = centerX + prevR * Math.cos(prevTheta);
+                    let prevY = centerY + prevR * Math.sin(prevTheta);
+                    ctx.moveTo(prevX, prevY);
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                i += 3; // Velocidad de trazado
+                requestAnimationFrame(animarRosa);
+            }
+        }
+
+        animarRosa();
+    </script>
+</body>
+</html>
