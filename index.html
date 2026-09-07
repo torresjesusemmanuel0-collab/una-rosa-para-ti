@@ -3,94 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Una rosa para ti ❤️</title>
+    <title>¡Feliz Cumpleaños! ❤️</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             background-color: #0d0d1a;
-            color: #ff758f;
-            font-family: Arial, sans-serif;
+            color: #f8edeb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+                justify-content: space-around;
+            }
         }
         canvas {
             background-color: transparent;
+            max-width: 100%;
+            height: auto;
         }
-        h2 {
-            margin-top: 20px;
-            font-size: 1.2rem;
+        .carta-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 117, 143, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 2s ease-in-out;
+        }
+        .carta-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .carta-box h1 {
+            color: #ff758f;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
             text-align: center;
-            padding: 0 10px;
+        }
+        .carta-box p {
+            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #e2e2e2;
+            margin-bottom: 12px;
+        }
+        .carta-box .firma {
+            text-align: right;
+            font-weight: bold;
+            color: #ff758f;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
-    <canvas id="rosaCanvas" width="400" height="400"></canvas>
-    <h2>Una rosa que nunca se marchita, para ti. ❤️</h2>
+    <div class="container">
+        <!-- Canvas donde se dibujan los tulipanes estilo Python -->
+        <canvas id="tulipCanvas" width="380" height="460"></canvas>
+
+        <!-- Carta de Cumpleaños -->
+        <div class="carta-box" id="carta">
+            <h1>¡Feliz Cumpleaños! 🎂✨</h1>
+            <p>Hoy es un día muy especial porque el mundo celebra el nacimiento de una persona increíble.</p>
+            <p>Quería prepararte algo diferente, hecho con mis propias manos y un poco de código, para recordarte lo mucho que vales y lo bonito que es coincidir contigo.</p>
+            <p>Deseo de corazón que este nuevo año de vida esté lleno de sonrisas, sueños cumplidos, salud y momentos inolvidables. Que nunca te falte luz ni motivos para ser feliz.</p>
+            <p class="firma">Con todo mi cariño. ❤️</p>
+        </div>
+    </div>
 
     <script>
-        const canvas = document.getElementById('rosaCanvas');
+        const canvas = document.getElementById('tulipCanvas');
         const ctx = canvas.getContext('2d');
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2 - 20;
+        const carta = document.getElementById('carta');
 
-        let i = 0;
-        const maxI = 360 * 5;
+        let step = 0;
 
-        // Dibuja el tallo y hoja primero
-        ctx.strokeStyle = "#2b9348";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY + 80);
-        ctx.quadraticCurveTo(centerX - 20, centerY + 140, centerX - 10, centerY + 180);
-        ctx.stroke();
+        function dibujarTulipan(x, y, scale, angle, colorFlor) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.scale(scale, scale);
 
-        // Hoja
-        ctx.fillStyle = "#55a630";
-        ctx.beginPath();
-        ctx.ellipse(centerX - 18, centerY + 130, 20, 9, Math.PI / 4, 0, 2 * Math.PI);
-        ctx.fill();
+            // Tallo
+            ctx.strokeStyle = "#2b9348";
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(-10, 100, 10, 200);
+            ctx.stroke();
 
-        // Animación de los pétalos de la rosa
-        function animarRosa() {
-            if (i < maxI) {
-                let theta = (i * Math.PI) / 180;
-                let r = 130 * Math.sin((5 / 2) * theta);
-                let x = centerX + r * Math.cos(theta);
-                let y = centerY + r * Math.sin(theta);
+            // Hoja
+            ctx.fillStyle = "#3a5a40";
+            ctx.beginPath();
+            ctx.moveTo(5, 120);
+            ctx.quadraticCurveTo(40, 80, 25, 40);
+            ctx.quadraticCurveTo(10, 80, 5, 120);
+            ctx.fill();
 
-                let colorVal = Math.abs(Math.sin(theta));
-                let red = 255;
-                let green = Math.floor(30 * colorVal);
-                let blue = Math.floor(100 + 100 * colorVal);
+            // Flor (Pétalos)
+            ctx.fillStyle = colorFlor;
+            
+            // Pétalo izquierdo
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(-30, -30, -15, -70);
+            ctx.quadraticCurveTo(0, -50, 0, 0);
+            ctx.fill();
 
-                ctx.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
-                ctx.lineWidth = 1.5;
+            // Pétalo derecho
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(30, -30, 15, -70);
+            ctx.quadraticCurveTo(0, -50, 0, 0);
+            ctx.fill();
 
-                ctx.beginPath();
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    let prevTheta = ((i - 1) * Math.PI) / 180;
-                    let prevR = 130 * Math.sin((5 / 2) * prevTheta);
-                    let prevX = centerX + prevR * Math.cos(prevTheta);
-                    let prevY = centerY + prevR * Math.sin(prevTheta);
-                    ctx.moveTo(prevX, prevY);
-                    ctx.lineTo(x, y);
-                }
-                ctx.stroke();
+            // Pétalo central
+            ctx.beginPath();
+            ctx.moveTo(-10, -10);
+            ctx.quadraticCurveTo(0, -80, 10, -10);
+            ctx.fill();
 
-                i += 3; // Velocidad de trazado
-                requestAnimationFrame(animarRosa);
+            ctx.restore();
+        }
+
+        // Animación progresiva (Aparecen los 3 tulipanes como en el video de Python)
+        function animarSecuencia() {
+            if (step === 1) {
+                // Tulipán 1 (Derecho alto)
+                dibujarTulipan(220, 180, 0.9, 0.1, "#a4133c");
+            } else if (step === 2) {
+                // Tulipán 2 (Izquierdo medio)
+                dibujarTulipan(130, 220, 0.8, -0.15, "#c9184a");
+            } else if (step === 3) {
+                // Tulipán 3 (Central pequeño)
+                dibujarTulipan(180, 250, 0.7, 0.05, "#ff4d6d");
+            } else if (step === 4) {
+                // Revelar carta
+                carta.classList.add('visible');
+            }
+
+            if (step <= 4) {
+                step++;
+                setTimeout(animarSecuencia, 1200); // Tiempo entre cada elemento
             }
         }
 
-        animarRosa();
+        // Iniciar animación
+        window.onload = () => {
+            setTimeout(animarSecuencia, 500);
+        };
     </script>
 </body>
 </html>
